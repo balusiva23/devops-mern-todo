@@ -3,7 +3,7 @@ name: MERN CI
 
 on: 
    push:
-       branches:[main]
+      branches:[main]
   
 jobs:
   mongo-init:
