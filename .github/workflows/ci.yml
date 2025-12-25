@@ -1,0 +1,50 @@
+name: MERN CI
+
+
+on: 
+   push:
+       branches:[main]
+  
+jobs:
+  mongo-init:
+    runs-on: ubuntu-latest              #virtual machine runner
+
+    services:
+      image: mongo
+      ports: ['27017:27017']
+    
+    
+    steps:
+       - name : Checkout Repository  #clone repostory server
+         uses : actions/checkout@v6
+       - name : Setup Node.js
+         uses : actions@setup-node@v3     #setup node js
+         with:
+             node-version: '18'
+       - name: waiting for MongoDb to be ready
+         run: |
+           until nc -z localhost 27017; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+           done
+           echo "MongoDB is up "
+
+       - name: Seed MongoDB
+         working-directory: ./backend
+         run: |
+          npm install
+          node seedTasksData.js
+  test :
+       runs-on: ubuntu-latest   
+
+       steps:
+       - name : Checkout Repository  #clone repostory server
+         uses : actions/checkout@v6
+       - name : Setup Node.js
+         uses : actions@setup-node@v3     #setup node js
+
+       - name : Install Dependencies for backend
+         run : npm install
+
+       - name : Running Backend Tests
+         run : npm test
