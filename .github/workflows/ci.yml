@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest              #virtual machine runner
 
     services:
+     mongo:
       image: mongo
       ports: ['27017:27017']
     
@@ -18,7 +19,7 @@ jobs:
        - name : Checkout Repository  #clone repostory server
          uses : actions/checkout@v6
        - name : Setup Node.js
-         uses : actions@setup-node@v3     #setup node js
+         uses : actions/setup-node@v3     #setup node js
          with:
              node-version: '18'
        - name: waiting for MongoDb to be ready
@@ -35,16 +36,19 @@ jobs:
           npm install
           node seedTasksData.js
   test :
-       runs-on: ubuntu-latest   
+       runs-on: ubuntu-latest  
+       needs: mongo-init 
 
        steps:
        - name : Checkout Repository  #clone repostory server
          uses : actions/checkout@v6
        - name : Setup Node.js
-         uses : actions@setup-node@v3     #setup node js
+         uses : actions/setup-node@v3     #setup node js
 
        - name : Install Dependencies for backend
+         working-directory: ./backend
          run : npm install
 
        - name : Running Backend Tests
+         working-directory: ./backend
          run : npm test
