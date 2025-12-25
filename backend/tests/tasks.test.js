@@ -9,9 +9,13 @@ describe('GET api/tasks', () => {
     })
     it('it should return object and tasks property ok', async() => {
         const res = await request(app).get('/api/tasks')
-        expect(typeof res.body).toBe("object");
-        expect(res.body).toHaveProperty("tasks")
-        console.log(res.body.tasks, 'DATA SEEDED')
+        // expect(typeof res.body).toBe("object");
+        // expect(res.body).toHaveProperty("tasks")
+        // console.log(res.body.tasks, 'DATA SEEDED')
+        expect(Array.isArray(res.body)).toBe(true);
+        expect(res.body.length).toBeGreaterThan(0);
+        expect(res.body[0]).toHaveProperty('text');
+        console.log(res.body, 'DATA SEEDED')
     })
 })
 
